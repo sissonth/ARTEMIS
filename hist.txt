@@ -1,0 +1,219 @@
+    1  sudo apt-get build-dep touchegg
+    2  qmake
+    3  make
+    4  sudo apt-get build-dep touchegg
+    5  sudo dpkg --configure -a
+    6  sudo apt-get instal -f
+    7  sudo apt-get install -f
+    8  sudo apt-get update
+    9  sudo add-apt-repository ppa:utouch-team/daily
+   10  sudo apt-get update
+   11  sudo apt-get install utouch
+   12  touchegg
+   13  sudo mkdir /usr/share/ca-certificates/extra
+   14  sudo cp AddTrustExternalCARoot.crt /usr/share/ca-certificates/extra/AddTrustExternalCARoot.crt
+   15  sudo cp /home/tommy/downloads/AddTrustExternalCARoot.crt /usr/share/ca-certificates/extra/AddTrustExternalCARoot.crt
+   16  sudo dpkg-reconfigure ca-certificates
+   17  sudo update-ca-certificates
+   18  sudo dpkg-reconfigure ca-certificates
+   19  sudo update-ca-certificates
+   20  sudo dpkg-reconfigure ca-certificates
+   21  sudo update-ca-certificates
+   22  ls
+   23  git clone git@github.com:ARTEMIS-UPenn/ARTEMIS.git
+   24  ls
+   25  cd ARTE
+   26  cd ARTEMIS/
+   27  ls
+   28  cd webserver/
+   29  ls
+   30  cd cgi-bin/
+   31  ls
+   32  cd ../..
+   33  ls
+   34  ls -la
+   35  history
+   36  ls
+   37  mkdir tommy
+   38  ls
+   39  git status
+   40  ls
+   41  touch tommy/test.txt
+   42  git status
+   43  cd tommy/
+   44  ls
+   45  cd ../
+   46  git status
+   47  git add tommy
+   48  git status
+   49  git commit -m "first local commit"
+   50  git status
+   51  git push
+   52  git pull
+   53  ls
+   54  rm -rf tommy
+   55  rm -rf testdir
+   56  ls
+   57  git status
+   58  git rm testdir/test.txt
+   59  git rm tommy/test.txt
+   60  git status
+   61  git commit -m "reset to head"
+   62  git push
+   63  sudo apt-get install g++
+   64  sudo apt-get install spotify-client
+   65  deb http://repository.spotify.com stable non-free
+   66  /etc/ap/sources.list
+   67  sudo apt-add-repository -y "deb http://repository.spotify.com stable non-free"
+   68  sudo apt-get update -qq
+   69  sudo apt-key adv --keyserver kerserver.ubuntu.com --recv-keys 94558F59
+   70  sudo apt-add-repository -y "deb http://repository.spotify.com stable non-free" &&  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 94558F59 &&  sudo apt-get update -qq &&  sudo apt-get install spotify-client
+   71  ls
+   72  mkdir practice_linux
+   73  ls
+   74  cd practice_linux
+   75  mkdir stuff
+   76  ls
+   77  ls -a
+   78  cd ..
+   79  cd
+   80  pwd
+   81  clear
+   82  who
+   83  man wc
+   84  apropros copy
+   85  apropos copy
+   86  ps
+   87  jobs
+   88  sleep 100
+   89  ps
+   90  python
+   91  arduino
+   92  root arduino
+   93  sudo arduino
+   94  arduino
+   95  git pull
+   96  sudo apt-get install vim-gnome
+   97  vim
+   98  cd ~/ARTEMIS
+   99  git pull
+  100  python
+  101  python
+  102  sudo apt-get install spyder
+  103  spyder
+  104  loate test2.py
+  105  locate test2.py
+  106  grep test2 ./*
+  107  ls
+  108  cd ARTEMIS/
+  109  ls
+  110  cd GUI/
+  111  ls
+  112  chmod a+x test2.py
+  113  ./test2.py 
+  114  vim test2.py
+  115  kivy
+  116  sudo updatedb
+  117  ./test2.py 
+  118  ls
+  119  emacs test.py
+  120  vim test2.py
+  121  ./test2.py 
+  122  python test2
+  123  python test2.py
+  124  sudo apt-get install alsa-oss
+  125  sudo apt-get update
+  126  cd 
+  127  ls
+  128  cd /ARTEMIS
+  129  cd \ARTEMIS
+  130  ls
+  131  cd \GUI
+  132  ls
+  133  aoss main.py
+  134  aoss python main.py
+  135  aoss
+  136  python aoss main.py
+  137  aoss
+  138  aoss main.py
+  139  aoss \main.py
+  140  aoss .\\main.py
+  141  aoss .\main.py
+  142  main.py
+  143  python main.py
+  144  aoss python main.py
+  145  locate kivy-examples
+  146  ls
+  147  cd \ARTEMIS
+  148  ls
+  149  cd  \GUI
+  150  ls
+  151  python main.py
+  152  cd \Simple_Function_GUI
+  153  l
+  154  cd
+  155  cd \ARTEMIS\GUI
+  156  cd \AREMIS
+  157  cd \ARTEMIS
+  158  ls
+  159  cd \GUI
+  160  ls
+  161  cd
+  162  cd \ARTEMIS
+  163  cd
+  164  cd /ARTEMIS
+  165  cd \ARTEMIS
+  166  ls
+  167  cd \ARTEMIS_1
+  168  ls
+  169  python main.py
+  170  python main.py --help
+  171  python main.py -a
+  172  cd \ARTEMIS
+  173  ls
+  174  cd \ARTEMIS_1
+  175  ls
+  176  python main.py -a
+  177  ls
+  178  cd \ARTEMIS
+  179  ls
+  180  cd \ARTEMIS_1
+  181  ls
+  182  python mian.py -a
+  183  python main.py -a
+  184  [A
+  185  python main.py -a
+  186  python main.py -a]
+  187  python main.py -a
+  188  pkill firefox
+  189  firefox
+  190  python
+  191  cd \ARTEMIS
+  192  cd \ARTEMIS_3
+  193  python main.py -a
+  194  cd \ARTEMIS
+  195  cd \ARTEMIS_#
+  196  cd \ARTEMIS_3
+  197  python main.py -a
+  198  cd \ARTEMIS
+  199  ls
+  200  cd \ARTMEIS_3
+  201  cd \ARTEMIS_3
+  202  ls
+  203  python main.py -a
+  204  cd \ARTEMIS
+  205  cd \ARTEMIS_3
+  206  python main.py -a
+  207  cd ..
+  208  cd \ARTEMIS_4
+  209  python main.py -a
+  210  [A
+  211  python main.py -a
+  212  ls
+  213  cd ARTEMSI
+  214  cd ARTEMIS
+  215  ls
+  216  cd ARTEMIS_4
+  217  python main.py -a
+  218  history
+  219  history > hist.txt
