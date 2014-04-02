@@ -32,8 +32,12 @@ from kivy.core.window import Window
 
 
 
-from inventory import ItemData
-from inventory import import_vending_items
+#from inventory import ItemData
+#from inventory import import_vending_items
+
+from google_inventory_data import ItemData
+from google_inventory_data import import_vending_items
+
 
 from user_database_import import import_user_data
 
@@ -143,7 +147,8 @@ class VendingInventoryList(GridLayout):
     def generate_inventory_list(self):
         global vending_inventory
         self.clear_widgets()
-        vending_inventory=import_vending_items('inventory_items.csv')
+        #vending_inventory=import_vending_items('inventory_items.csv')
+        vending_inventory=import_vending_items()
         for x in xrange(len(vending_inventory)):       
             item_data=vending_inventory[x]
             item=VendingInventoryItem()
@@ -167,6 +172,7 @@ class CheckoutItem(BoxLayout):
         #self.ids.number_in_cart.text=str(self.idnumber.in_cart)
         self.ids.item_name.text=self.idnumber.name
         self.ids.item_cost.text='$'+str(self.idnumber.cost)
+        self.ids.item_inventory.text=str(self.idnumber.inventory)
         #self.ids.item_total.text=' $ ' + str((self.idnumber.in_cart)*(self.idnumber.cost))
         
     def update_count(self):
