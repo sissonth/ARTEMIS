@@ -1,5 +1,18 @@
 #!/usr/bin/python
 
+################# CONFIGURE INPUTS ############################
+
+import usb.core
+#search for device
+if usb.core.find(idVendor=0x0408, idProduct=0x3025) != None:
+    from kivy.config import Config
+    Config.set('input','mouse','')
+
+
+##############################################################
+
+
+
 from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.uix.tabbedpanel import TabbedPanel
@@ -436,7 +449,12 @@ class MyWidget(TabbedPanel):
         #self.ids.vil.retreive_order()
         #self.ids.cw.update_checkout()
         #print(cart_items)
-        
+#    def on_touch_down(self,touch):
+#        if touch.is_double_tap:
+#            print('Touch is a double tap!')
+#        else:
+#            print('Touch was not a double tap!')
+#            print(touch.id)
         
 
 class artemisApp(App):
@@ -446,7 +464,7 @@ class artemisApp(App):
         artemis=MyWidget()
         return artemis
         
-        
+                
     def on_start(self):
         Logger.info('App: ARTEMIS ALIVE')
         
