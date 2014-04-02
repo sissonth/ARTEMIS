@@ -74,7 +74,7 @@ current_user=[]
 
 #vending_inventory=[item1,item2,item3]
 
-vending_inventory=import_vending_items('inventory_items.csv')
+#vending_inventory=import_vending_items('inventory_items.csv')
 
 cart_items = []
 cart_need_update=False
@@ -137,11 +137,13 @@ class VendingInventoryItem(BoxLayout):
 
 
 class VendingInventoryList(GridLayout):
-    
     def __init__(self,**kwargs):
         super(VendingInventoryList,self).__init__(**kwargs)
     
-    def generate_inventory_list(self,vending_inventory):
+    def generate_inventory_list(self):
+        global vending_inventory
+        self.clear_widgets()
+        vending_inventory=import_vending_items('inventory_items.csv')
         for x in xrange(len(vending_inventory)):       
             item_data=vending_inventory[x]
             item=VendingInventoryItem()
@@ -150,6 +152,7 @@ class VendingInventoryList(GridLayout):
         
     def regenerate_list(self):
         self.clear_widgets()
+        self.generate_inventory_list()
         
         
         
@@ -306,14 +309,15 @@ class VendingInProcess(Popup):
         super(VendingInProcess,self).__init__(**kwargs)
         self.trigger_update_all_widgets()        
         
-    def vend_command():
+    def vend_command(self):
         pass
     
-    def update_databases_command():
+    def update_databases_command(self):
         pass
     
-    def trigger_update_all_widgets():
+    def trigger_update_all_widgets(self):
         global update_widgets_flag
+        self.update_databases_command()
         update_widgets_flag=True
         pass
         
@@ -400,12 +404,12 @@ class MyWidget(TabbedPanel):
 #        item2=VendingInventoryItem()
 #        item2.load_item_info(item2_data)
 #        self.ids.vil.add_widget(item2)
-        self.ids.vil.generate_inventory_list(vending_inventory)
+        self.ids.vil.generate_inventory_list()
         
         #self.ids.cw.update_checkout()
         Clock.schedule_interval(self.updateCheckout_list, .1)
         Clock.schedule_interval(self.update_user,.2)
-
+        Clock.schedule_interval(self.update_inventory_widgets,.2)
                 
     def update_user(self,dt):
         global current_user
@@ -422,7 +426,7 @@ class MyWidget(TabbedPanel):
     def update_inventory_widgets(self,dt):
         global update_widgets_flag
         if update_widgets_flag == True:
-            self.ids.vil.regenerate_list()
+            self.ids.vil.generate_inventory_list()
             update_widgets_flag = False
         
         
