@@ -206,9 +206,9 @@ def retrieve_data():
     
 #    print "Penn card info: ", info
 
-        return info['penn_card_number']
+        return (info['penn_card_number'],info['name'])
     else:
-        return []        
+        return ([],[])        
     
 #####################################################################
 #####################################################################

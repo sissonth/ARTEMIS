@@ -30,16 +30,23 @@ from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.core.window import Window
 
+import time
 
+import signal_stuff
 
 #from inventory import ItemData
 #from inventory import import_vending_items
 
 from google_inventory_data import ItemData
 from google_inventory_data import import_vending_items
+from google_inventory_data import record_transaction
 
 
-from user_database_import import import_user_data
+from google_user_database_import import import_user_data
+from google_user_database_import import retrieve_account_quotas
+
+
+#from user_database_import import import_user_data
 
 from card_reader import initialize_cardReader
 from card_reader import retrieve_data
@@ -53,13 +60,19 @@ global current_user
 global current_user_needs_updating
 global selected_account
 global update_widgets_flag
-
+global quota_items
+global quotas
+global loggout_trigger
 
 update_widgets_flag=False
 
 current_user_needs_updating = False
 current_user=[]
+quota_items=[]
+selected_account=[]
 
+
+loggout_trigger=False
 #class ItemData():
 #    item_id='idnumber'
 #    name='name'
@@ -131,7 +144,7 @@ class VendingInventoryItem(BoxLayout):
         global cart_items
         global cart_need_update
         global current_user
-        if current_user==[]:
+        if current_user==[] or quota_items==[]:
             login_first_error=ErrorPopup()
             login_first_error.open()
         else:
@@ -164,15 +177,30 @@ class VendingInventoryList(GridLayout):
         
 #################### CHECKOUT AREA #######################################        
 class CheckoutItem(BoxLayout):
+    global current_user
+    global quotas
+    global quota_items
+    
     def __init__(self,**kwargs):
         super(CheckoutItem,self).__init__(**kwargs)
     
     def load_data(self,item_data):
+        global current_user
+        global quotas
+        global quota_items
+        
         self.idnumber=item_data
         #self.ids.number_in_cart.text=str(self.idnumber.in_cart)
         self.ids.item_name.text=self.idnumber.name
         self.ids.item_cost.text='$'+str(self.idnumber.cost)
         self.ids.item_inventory.text=str(self.idnumber.inventory)
+        ### add retreiving quota code hereu
+        ind=quota_items.index(self.idnumber.name)
+        
+        self.idnumber.quota=quotas[ind]
+        self.ids.quota.text=self.idnumber.quota
+        
+#        self.ids.quota.text=current_user.
         #self.ids.item_total.text=' $ ' + str((self.idnumber.in_cart)*(self.idnumber.cost))
         
     def update_count(self):
@@ -259,24 +287,41 @@ class CheckoutWidget(BoxLayout):
     def __init__(self,**kwargs):
         super(CheckoutWidget,self).__init__(**kwargs)  
         #self.ids.penn_id_button.bind(on_release=self.request_card_swipe)
+                       
         
     def update_account(self):
         global selected_account
+        global quota_items
+        global quotas
+        global cart_need_update
+        
+        cart_need_update=True
+        
         selected_account=self.ids.account_selection.text
+        if selected_account!='Select Account':
+            [quota_items,quotas]=retrieve_account_quotas(selected_account)
         self.test()
         
     def test(self):
         print 'ahahaha'
         
     def checkout(self,penn_id_number,account_selection):
+        global current_user
+        global selected_account
+        global cart_items
 #        anim=Animation(x=100,y=100)
 #        anim.start(self)
         #root_window=self.get_root_window()
-        confirmation=ConfirmationScreen()
-        confirmation.load_cart(account_selection)
-        confirmation.open()        
-        #root_window.add_widget(popup)
-        print 'Penn ID:', penn_id_number,' Account: ', account_selection
+        
+        if (current_user==[]) or (selected_account==[]) or cart_items==[]:
+            login_first_error=ErrorPopup()
+            login_first_error.open()
+        else:
+            confirmation=ConfirmationScreen()
+            confirmation.load_cart(account_selection)
+            confirmation.open()        
+            #root_window.add_widget(popup)
+            print 'Penn ID:', penn_id_number,' Account: ', account_selection
         
     def update_checkout(self,cart_items):
         #self.ids.total_cost.text='$'+str(total_cost)
@@ -298,10 +343,16 @@ class CheckoutWidget(BoxLayout):
     def loggout(self,value):
         global current_user
         global selected_account
-        global cart_items        
+        global cart_items
+        global quotas
+        global quota_items
+        
         selected_account=[]
         current_user=[]
         cart_items=[]
+        quotas=[]
+        quota_items=[]
+        
         self.update_checkout(cart_items)
         self.ids.penn_id_button.text='Click Here to Login'
         self.ids.account_selection.values=()
@@ -313,19 +364,39 @@ class CheckoutWidget(BoxLayout):
 class VendingInProcess(Popup):
     def __init__(self,**kwargs):
         super(VendingInProcess,self).__init__(**kwargs)
-        self.trigger_update_all_widgets()        
+        Clock.schedule_interval(self.trigger_retract,.1)
+        #Clock.schedule_once(self.trigger_update_all_widgets, 1)
+        #self.trigger_update_all_widgets()
+
         
-    def vend_command(self):
-        pass
+    def vend_command(self,did):
+        global current_did
+        current_did=did
+        signal_stuff.dispense(current_did)
+        
+        
+    def trigger_retract(self,dt):
+        global current_did
+        if signal_stuff.retrieve_status(current_did)==73:
+            Clock.unschedule(self.trigger_retract)
+            time.sleep(1)
+            signal_stuff.retract(current_did)
+            self.trigger_update_all_widgets()
+    
     
     def update_databases_command(self):
-        pass
+        global cart_items
+        global current_user        
+        record_transaction(cart_items,current_user)
+
     
     def trigger_update_all_widgets(self):
         global update_widgets_flag
+        global loggout_trigger        
         self.update_databases_command()
         update_widgets_flag=True
-        pass
+        loggout_trigger=True
+        
         
 class ConfirmationCheckoutList(GridLayout):
     def __init__(self,**kwargs):
@@ -343,11 +414,12 @@ class SwipePennCard(Popup):
     def update_user(self,dt):
         global current_user
         global current_user_needs_updating
+        print 'update user called'
         
-        penncard_output=retrieve_data()
+        [penncard_output,penncard_output_name]=retrieve_data()
         if len(penncard_output)>0:
             current_user_needs_updating = True
-            current_user=import_user_data(penncard_output)
+            current_user=import_user_data(penncard_output,penncard_output_name)
             Clock.unschedule(self.update_user)
             #self.ids.cw.current_user_updated(current_user)
             self.dismiss()
@@ -359,6 +431,7 @@ class SwipePennCard(Popup):
         
         
 class ConfirmationScreen(Popup):
+    global cart_items
     def __init__(self,**kwargs):
         super(ConfirmationScreen,self).__init__(**kwargs)    
 
@@ -383,12 +456,18 @@ class ConfirmationScreen(Popup):
             #self.ids.cart_list.add_widget(Label(text=str(x)))
 
     def proceed_to_vend(self):
+#        global cart_items
+#        global current_user
+        
         vendingPopup=VendingInProcess()
         self.dismiss()        
         vendingPopup.open()
-
+        vendingPopup.vend_command(253)
+        #record_transaction(cart_items,current_user)        
+        
     def cancel_order(self):
         self.dismiss()
+
 
 
 class ErrorPopup(Popup):
@@ -428,6 +507,12 @@ class MyWidget(TabbedPanel):
         #if current_user == [] and (current_user_needs_updating==True):
         #    self.ids.cw.loggout()
         #    current_user_needs_updating==False            
+    
+        global loggout_trigger
+        if loggout_trigger==True:
+            self.ids.cw.loggout(0)
+            loggout_trigger=False
+    
     
     def update_inventory_widgets(self,dt):
         global update_widgets_flag
