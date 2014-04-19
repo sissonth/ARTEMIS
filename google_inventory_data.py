@@ -48,6 +48,12 @@ def record_transaction(cart_items,current_user,selected_account):
     
     transaction_wks.append_row([date,dtime,current_user.name,current_user.PennID,cart_items[0].name,selected_account])
     
+    inventory_wks=sh.worksheet('Inventory')
+    row=(inventory_wks.find(cart_items[0].name)).row
+    old_quantity=int(inventory_wks.cell(row,2).value)
+    new_quantity=old_quantity-1
+    inventory_wks.update_cell(row,2,new_quantity)
+    
     
     
     print cart_items[0].name

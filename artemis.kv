@@ -99,7 +99,41 @@
         text: 'Settings'
         font_size:18
         background_color:[1,1,.2,.8]
-
+#        BoxLayout:
+#
+#           BoxLayout:
+#                canvas.before:
+#                    Color:
+#                        rgba: 0, .2, .5, 1
+#                    Rectangle:
+#                        # self here refers to the widget i.e BoxLayout
+#                        pos: self.pos
+#                        size: self.size
+#                orientation:'vertical'
+#                BoxLayout:
+#                    size_hint:.98,.1
+#                    Label:
+#                        text:'Part Name'
+#                        font_size:18
+#                    Label:
+#                        text:'Description'
+#                        font_size:18
+#                    Label:
+#                        text:'Data Sheet'    
+#                        font_size:18
+#                    Label:
+#                        text:'Relevent Courses'   
+#                        font_size:18
+#                    Label:
+#                        text:'Price/Add to Cart'    
+#                        font_size:18             
+#                ScrollView:
+#                    scroll_timeout:100
+#                    size_hint:1,1
+#                    bar_margin:10
+#                    do_scroll_x:False
+#                    VendingInventoryList:
+#                        id:vil_settings
 
 
 
