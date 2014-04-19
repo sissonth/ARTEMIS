@@ -323,6 +323,17 @@
         orientation:'horizontal'
         Label:
             font_size:18
+            text: 'Purchased:'
+            color:[0,0,0,1]
+        Label:
+            id:previously_purchased
+            font_size:18
+            text: '4'
+            color:[0,0,0,1]
+    BoxLayout:
+        orientation:'horizontal'
+        Label:
+            font_size:18
             text: 'Price:'
             color:[0,0,0,1]
         Label:
@@ -423,6 +434,26 @@
             size_hint:1,.3
             text:'Dismiss'
             on_release:root.dismiss()
+
+
+<QuotaErrorPopup>:
+    size_hint:.7,.7
+    auto_dismiss:False
+    title:'Error!'
+    title_size:24
+    BoxLayout:
+        orientation:'vertical'
+        Label:
+            halign:'center'
+            text:'You have already \n reached your quota for this part'
+            font_size:40
+        Button:
+            size_hint:1,.3
+            text:'Dismiss'
+            on_release:root.dismiss()
+
+
+
 
 <SwipePennCard>:
     size_hint: .7, .7

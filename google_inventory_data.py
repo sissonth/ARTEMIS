@@ -2,7 +2,6 @@
 import gspread
 global cart_items
 
-
 class ItemData():
     item_id='idnumber'
     name='name'
@@ -10,6 +9,8 @@ class ItemData():
     courses='courses'
     inventory='inventory'
     quota='quota'
+    purchased=0
+    did='0'
     cost=6.00
     in_cart=[]
 
@@ -29,13 +30,13 @@ def import_vending_items():
             item.inventory=row[1]
             item.cost=float(row[2])
             item.description=row[3]
-            
+            item.did=int(row[6])
             vending_inventory.append(item)
             
     return vending_inventory
     
 
-def record_transaction(cart_items,current_user):
+def record_transaction(cart_items,current_user,selected_account):
     from time import strftime
     # Login with your Google account
     gc = gspread.login("meam.artemis@gmail.com","artemis1234")
@@ -45,7 +46,7 @@ def record_transaction(cart_items,current_user):
     date=strftime("%x")
     dtime=strftime("%X")
     
-    transaction_wks.append_row([date,dtime,current_user.name,current_user.PennID,cart_items[0].name])
+    transaction_wks.append_row([date,dtime,current_user.name,current_user.PennID,cart_items[0].name,selected_account])
     
     
     

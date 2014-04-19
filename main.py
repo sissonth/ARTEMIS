@@ -44,6 +44,7 @@ from google_inventory_data import record_transaction
 
 from google_user_database_import import import_user_data
 from google_user_database_import import retrieve_account_quotas
+from google_user_database_import import retrieve_account_quotas_from_matrix
 
 
 #from user_database_import import import_user_data
@@ -63,6 +64,8 @@ global update_widgets_flag
 global quota_items
 global quotas
 global loggout_trigger
+global quota_matrix
+
 
 update_widgets_flag=False
 
@@ -188,6 +191,8 @@ class CheckoutItem(BoxLayout):
         global current_user
         global quotas
         global quota_items
+        global selected_account
+        global cart_items        
         
         self.idnumber=item_data
         #self.ids.number_in_cart.text=str(self.idnumber.in_cart)
@@ -200,12 +205,17 @@ class CheckoutItem(BoxLayout):
         self.idnumber.quota=quotas[ind]
         self.ids.quota.text=self.idnumber.quota
         
+        ##### loading transaction history ######
+        purchased=current_user.purchase_history[selected_account]
+        self.ids.previously_purchased.text=str(purchased[self.idnumber.name])
+        cart_items[0].purchased=purchased[self.idnumber.name]
+        
+        
 #        self.ids.quota.text=current_user.
         #self.ids.item_total.text=' $ ' + str((self.idnumber.in_cart)*(self.idnumber.cost))
         
     def update_count(self):
         self.ids.number_in_cart.text=self.idnumber.in_cart
-
 
 
 class CheckoutConfirmationItem(BoxLayout):
@@ -294,12 +304,14 @@ class CheckoutWidget(BoxLayout):
         global quota_items
         global quotas
         global cart_need_update
+        global quota_matrix
         
         cart_need_update=True
         
         selected_account=self.ids.account_selection.text
         if selected_account!='Select Account':
-            [quota_items,quotas]=retrieve_account_quotas(selected_account)
+            #[quota_items,quotas]=retrieve_account_quotas(selected_account)
+            [quota_items,quotas]=retrieve_account_quotas_from_matrix(quota_matrix,selected_account)
         self.test()
         
     def test(self):
@@ -316,6 +328,9 @@ class CheckoutWidget(BoxLayout):
         if (current_user==[]) or (selected_account==[]) or cart_items==[]:
             login_first_error=ErrorPopup()
             login_first_error.open()
+        elif (cart_items[0].purchased >= int(cart_items[0].quota)):
+            quota_error=QuotaErrorPopup()
+            quota_error.open()
         else:
             confirmation=ConfirmationScreen()
             confirmation.load_cart(account_selection)
@@ -346,12 +361,14 @@ class CheckoutWidget(BoxLayout):
         global cart_items
         global quotas
         global quota_items
+        global quota_matrix
         
         selected_account=[]
         current_user=[]
         cart_items=[]
         quotas=[]
         quota_items=[]
+        quota_matrix=[]        
         
         self.update_checkout(cart_items)
         self.ids.penn_id_button.text='Click Here to Login'
@@ -370,32 +387,40 @@ class VendingInProcess(Popup):
 
         
     def vend_command(self,did):
-        global current_did
-        current_did=did
-        signal_stuff.dispense(current_did)
-        
+        global cart_items
+        try:
+            signal_stuff.dispense(cart_items[0].did)
+        except:
+            print 'NOT CONNECTED TO VEND'
         
     def trigger_retract(self,dt):
-        global current_did
-        if signal_stuff.retrieve_status(current_did)==73:
+        global cart_items
+        try:
+            if signal_stuff.retrieve_status(cart_items[0].did)==73:
+                Clock.unschedule(self.trigger_retract)
+                time.sleep(1)
+                signal_stuff.retract(cart_items[0].did)
+                self.trigger_update_all_widgets()
+        except:
             Clock.unschedule(self.trigger_retract)
-            time.sleep(1)
-            signal_stuff.retract(current_did)
+            time.sleep(1) 
             self.trigger_update_all_widgets()
-    
+            print 'NOT CONNECTED TO RETRACT'
     
     def update_databases_command(self):
         global cart_items
-        global current_user        
-        record_transaction(cart_items,current_user)
+        global current_user
+        global selected_account        
+        record_transaction(cart_items,current_user,selected_account)
+        
 
     
     def trigger_update_all_widgets(self):
         global update_widgets_flag
         global loggout_trigger        
-        self.update_databases_command()
         update_widgets_flag=True
         loggout_trigger=True
+        self.update_databases_command()
         
         
 class ConfirmationCheckoutList(GridLayout):
@@ -414,12 +439,14 @@ class SwipePennCard(Popup):
     def update_user(self,dt):
         global current_user
         global current_user_needs_updating
+        global quota_matrix
+        
         print 'update user called'
         
         [penncard_output,penncard_output_name]=retrieve_data()
         if len(penncard_output)>0:
             current_user_needs_updating = True
-            current_user=import_user_data(penncard_output,penncard_output_name)
+            [current_user,quota_matrix]=import_user_data(penncard_output,penncard_output_name)
             Clock.unschedule(self.update_user)
             #self.ids.cw.current_user_updated(current_user)
             self.dismiss()
@@ -474,7 +501,9 @@ class ErrorPopup(Popup):
     def __init__(self,**kwargs):
         super(ErrorPopup,self).__init__(**kwargs)
         
-    
+class QuotaErrorPopup(Popup):
+    def __init__(self,**kwargs):
+        super(QuotaErrorPopup,self).__init__(**kwargs)
 
 ############################### Root Widget ##############################
 class MyWidget(TabbedPanel):

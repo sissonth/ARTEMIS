@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import gspread
+import numpy as np
 
 class UserData():
     PennID='pennID'
@@ -74,7 +75,68 @@ def import_user_data(penn_id,penncard_output_name):
 #    
 #    t=quota_wks.row_values(1)
     
-    return person
+    
+    
+    ################ retrieve person's transaction history #############3
+    transactions_wks=sh.worksheet('Transaction History')
+    penn_ids=transactions_wks.col_values(4)
+    items=transactions_wks.col_values(5)
+    accounts=transactions_wks.col_values(6)      
+    
+    
+    item_history=[]
+    accounts_history=[]
+    
+    count=0
+    
+    for row in penn_ids:
+        if row==penn_id:
+            item_history.append(items[count])
+            accounts_history.append(accounts[count])
+        count=count+1
+
+
+    from collections import Counter
+
+    account_transaction_dict={}
+    
+    for row in person.accounts:
+        count2=0
+        this_acct_item_history=[]        
+        for v in accounts_history:        
+            if v==row:
+                this_acct_item_history.append(item_history[count2])
+            count2=count2+1
+
+
+        account_transaction_dict[row]=Counter(this_acct_item_history)
+
+        
+    print account_transaction_dict
+
+    
+    
+    person.purchase_history=account_transaction_dict 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    ######## retrieve master list of quotas ##################
+    quota_wks=sh.worksheet('Account Quotas')
+    quota_matrix=np.matrix(quota_wks.get_all_values())
+    
+    
+    
+    
+    
+    
+    return person, quota_matrix
             
 
 def retrieve_account_quotas(account):
@@ -91,8 +153,64 @@ def retrieve_account_quotas(account):
     
     return t, quotas
 
-            
+def retrieve_account_quotas_from_matrix(quota_matrix,account):
+    item_row=quota_matrix[0].tolist()
+    t=item_row[0]
+    
+    d=quota_matrix.tolist()
+    
+    for row in d:
+        if row[0]==account:
+            quotas=row
+        
+    return t, quotas
+        
 
+def retrieve_transaction_history(penn_card_number):
+    # Login with your Google account
+    gc = gspread.login("meam.artemis@gmail.com","artemis1234")
+    # Open a worksheet from spreadsheet with one shot
+    sh=gc.open("VendmoGM")
+    
+    transactions_wks=sh.worksheet('Transaction History')
+    penn_ids=transactions_wks.col_values(4)
+    items=transactions_wks.col_values(5)
+    accounts=transactions_wks.col_values(6)    
+    
+    
+    item_history=[]
+    accounts_history=[]
+    
+    count=0
+    
+    for row in penn_ids:
+        if row==penn_card_number:
+            item_history.append(items[count])
+            accounts_history.append(accounts[count])
+        count=count+1
+
+    from collections import Counter
+
+    account_transaction_dict={}
+    
+    for row in person.accounts:
+        count2=0        
+        for v in accounts_history:        
+            if v==row:
+                this_acct_item_history.append(item_history[count2])
+            count2=count2+1
+        account_transaction_dict[row:Counter(this_acct_item_history)]
+        
+    print account_transaction_dict
+            
+            ##################### STILL WORKING ON THIS
+        
+        
+        
+    c=Counter(item_history)
+    
+
+    return c
   
 #def import_user_data(penn_id):
 #    with open('user_database.csv','rb') as f:
