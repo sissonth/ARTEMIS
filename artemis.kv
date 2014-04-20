@@ -92,48 +92,124 @@
         text: 'Checkout Tools!'
         font_size:18
         background_color:[1,0,0,.8]
-        RstDocument:
-            text: '\\n'.join(("Hello world", "-----------", "You are in the third tab."))
+        BoxLayout:
+            padding:[10,10,10,10]
+            orientation: 'vertical'
+            size_hint:[1,1]
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1
+                Rectangle:
+                    # self here refers to the widget i.e BoxLayout
+                    pos: self.pos
+                    size: self.size
+            BoxLayout:
+                orientation:'vertical'
+                size_hint:1,.35
+                Image:
+                    source: 'artemis_black.png'
 
     TabbedPanelItem:
         text: 'Settings'
         font_size:18
         background_color:[1,1,.2,.8]
-#        BoxLayout:
-#
-#           BoxLayout:
-#                canvas.before:
-#                    Color:
-#                        rgba: 0, .2, .5, 1
-#                    Rectangle:
-#                        # self here refers to the widget i.e BoxLayout
-#                        pos: self.pos
-#                        size: self.size
-#                orientation:'vertical'
-#                BoxLayout:
-#                    size_hint:.98,.1
-#                    Label:
-#                        text:'Part Name'
-#                        font_size:18
-#                    Label:
-#                        text:'Description'
-#                        font_size:18
-#                    Label:
-#                        text:'Data Sheet'    
-#                        font_size:18
-#                    Label:
-#                        text:'Relevent Courses'   
-#                        font_size:18
-#                    Label:
-#                        text:'Price/Add to Cart'    
-#                        font_size:18             
-#                ScrollView:
-#                    scroll_timeout:100
-#                    size_hint:1,1
-#                    bar_margin:10
-#                    do_scroll_x:False
-#                    VendingInventoryList:
-#                        id:vil_settings
+        BoxLayout:
+            BoxLayout:
+                canvas.before:
+                    Color:
+                        rgba: 0, .2, .5, 1
+                    Rectangle:
+                        # self here refers to the widget i.e BoxLayout
+                        pos: self.pos
+                        size: self.size
+                orientation:'vertical'
+                BoxLayout:
+                    size_hint:.98,.1
+                    Label:
+                        text:'Part Name'
+                        font_size:18
+                    Label:
+                        text:'LED'
+                        font_size:18
+                    Label:
+                        text:'Door'    
+                        font_size:18
+                    Label:
+                        text:'DataSheet File'   
+                        font_size:18
+                #FileChooserListView:             
+                ScrollView:
+                    scroll_timeout:100
+                    size_hint:1,1
+                    bar_margin:10
+                    do_scroll_x:False
+                    SettingsList:
+                        id:settings_list_id
+            panelsettings:
+
+
+<SettingsList>:
+    cols:1
+    size_hint:.98,1
+    #padding:50
+    spacing:10
+    #border:10
+    size_hint_y:None
+    height: self.minimum_height
+
+
+
+
+<SettingsItem>:
+    canvas.before:
+        Color:
+            rgba: 0, 0, .5, .5
+        Rectangle:
+            # self here refers to the widget i.e BoxLayout
+            pos: self.pos
+            size: self.size
+    orientation:'horizontal'
+    size_hint_y:None
+    height:100
+    spacing:10
+    
+    
+    Label:
+        id:item_name_label
+    Button:
+        id:LED_id
+        text:'LED'
+    Button:
+        text: 'Door (3 sec)'
+    Button:
+        id:set_datasheet_id
+
+<panelsettings>:
+    padding:[10,10,10,10]
+    orientation: 'vertical'
+    size_hint:[.5,1]
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            # self here refers to the widget i.e BoxLayout
+            pos: self.pos
+            size: self.size
+    BoxLayout:
+        orientation:'vertical'
+        size_hint:1,.35
+        Image:
+            source: 'artemis_black.png'
+    Button:
+        font_size:24
+        text:'CLICK TO SYNC \nWITH GOOGLE DATABASE'
+        on_release:root.google_sync()
+
+
+
+
+
+
 
 
 
@@ -280,6 +356,7 @@
         font_size:10
     Button:
         text: 'DataSheet Button'
+        on_release:root.show_pdf()
     Label:
         id:course_numbers_label
     BoxLayout:
@@ -486,7 +563,34 @@
             text:'Dismiss'
             on_release:root.dismiss()
 
+##### DATASHEET STUFF ###########
+<DatasheetPopup>:
+    size_hint:.7,.7
+    auto_dismiss:False
+    title:'Datasheet'
+    title_size:24
+    BoxLayout:
+        orientation:'vertical'
+        id:datasheet_box
+        Image:
+            id:image_id
+            source:root.source
 
+
+#        Label:
+#            halign:'center'
+#            text:'Must Login First! \n Swipe Your PennCard and Select an Account'
+#            font_size:40
+        Button:
+            size_hint:1,.3
+            text:'Dismiss'
+            on_release:root.dismiss()
+
+
+
+
+
+########################################
 
 
 <SwipePennCard>:
@@ -538,26 +642,8 @@
     BoxLayout:
         orientation: 'vertical'
         BoxLayout:
-            BoxLayout:
-                orientation:'vertical'
-                Label:
-                    size_hint:1,.2
-                    text:'Items In Cart:'
-                    halign:'left'
-                    font_size:24
 
-                ScrollView:
-                    scroll_timeout:100
-                    size_hint:1,1
-                
-                    bar_margin:10
-                    do_scroll_x:False
-                    ConfirmationCheckoutList:
-                        id:cart_list
 
-                #BoxLayout:
-                 #   orientation:'vertical'
-                  #  id:cart_list                
             BoxLayout:
                 orientation:'vertical'
                 Label:

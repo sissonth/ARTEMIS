@@ -25,10 +25,14 @@ from kivy.lang import Builder
 from kivy.factory import Factory
 from kivy.uix.button import Button
 from kivy.properties import ObjectProperty
+from kivy.properties import StringProperty
 from kivy.clock import Clock
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.core.window import Window
+from kivy.uix.image import Image
+
+
 
 import time
 
@@ -129,6 +133,13 @@ class VendingInventoryItem(BoxLayout):
         
         cart_need_update=True
 
+              
+    def show_pdf(self):
+        global cart_items
+        datasheet_popup=DatasheetPopup()
+        datasheet_popup.load_image(self.idnumber.datasheetfile)
+        datasheet_popup.open()
+              
               
     def remove_one_from_cart(self,x):
         global cart_items
@@ -468,7 +479,7 @@ class ConfirmationScreen(Popup):
         cart=CheckoutList()
         cart.clear_widgets()
         cart.update_confirmation_list()
-        self.ids.cart_list.add_widget(cart)
+        #self.ids.cart_list.add_widget(cart)
         self.ids.user_label.text=current_user.name
         self.ids.user_pennID.text=str(current_user.PennID)
         self.ids.account_label.text=account_selection
@@ -501,9 +512,82 @@ class ErrorPopup(Popup):
     def __init__(self,**kwargs):
         super(ErrorPopup,self).__init__(**kwargs)
         
+        
+        
+class DatasheetPopup(Popup):
+    source=StringProperty(None)        
+    def __init__(self,**kwargs):
+        super(DatasheetPopup,self).__init__(**kwargs)
+        #image=Image(source='reeses.jpg')
+        #self.ids.datasheet_box.add_widget(image)
+        
+    def load_image(self,image_file):
+        self.source='datasheets/'+ image_file
+        
+        
 class QuotaErrorPopup(Popup):
     def __init__(self,**kwargs):
         super(QuotaErrorPopup,self).__init__(**kwargs)
+
+###########################################################################
+class SettingsList(GridLayout):
+    def __init__(self,**kwargs):
+        super(SettingsList,self).__init__(**kwargs)
+    
+    def generate_inventory_list(self):
+        global vending_inventory
+        self.clear_widgets()
+        #vending_inventory=import_vending_items('inventory_items.csv')
+        vending_inventory=import_vending_items()
+        for x in xrange(len(vending_inventory)):       
+            item_data=vending_inventory[x]
+            item=SettingsItem()
+            item.load_item_info(item_data)
+            self.add_widget(item)
+        
+    def regenerate_list(self):
+        self.clear_widgets()
+        self.generate_inventory_list()
+
+
+
+class SettingsItem(BoxLayout):    
+    global cart_items
+    
+    def __init__(self,**kwargs):
+        super(SettingsItem,self).__init__(**kwargs)
+        
+    def load_item_info(self,item):
+        self.ids.item_name_label.text=item.name
+#        self.ids.item_description_label.text=item.description
+#        self.ids.course_numbers_label.text=item.courses
+#        #self.idnumber=item.item_id
+#        self.idnumber=item
+
+
+class panelsettings(BoxLayout):
+    def __init__(self,**kwargs):
+        super(panelsettings,self).__init__(**kwargs)  
+
+
+    def google_sync(self):
+        global update_widgets_flag
+        update_widgets_flag = True
+        #self.ids.penn_id_button.bind(on_release=self.request_card_swipe)
+
+
+############################################################################
+############################################################################
+###################### ANNOYING PDF CODE ##################################
+############################################################################
+
+############################################################################
+############################################################################
+###################### ANNOYING PDF CODE ##################################
+############################################################################
+
+
+
 
 ############################### Root Widget ##############################
 class MyWidget(TabbedPanel):
@@ -519,6 +603,7 @@ class MyWidget(TabbedPanel):
 #        item2.load_item_info(item2_data)
 #        self.ids.vil.add_widget(item2)
         self.ids.vil.generate_inventory_list()
+        self.ids.settings_list_id.generate_inventory_list()
         
         #self.ids.cw.update_checkout()
         Clock.schedule_interval(self.updateCheckout_list, .1)
@@ -547,6 +632,7 @@ class MyWidget(TabbedPanel):
         global update_widgets_flag
         if update_widgets_flag == True:
             self.ids.vil.generate_inventory_list()
+            self.ids.settings_list_id.generate_inventory_list()
             update_widgets_flag = False
         
         

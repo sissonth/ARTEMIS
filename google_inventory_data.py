@@ -12,6 +12,7 @@ class ItemData():
     purchased=0
     did='0'
     cost=6.00
+    datasheetfile=''
     in_cart=[]
 
 
@@ -31,6 +32,7 @@ def import_vending_items():
             item.cost=float(row[2])
             item.description=row[3]
             item.did=int(row[6])
+            item.datasheetfile=row[7]
             vending_inventory.append(item)
             
     return vending_inventory

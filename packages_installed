@@ -2,6 +2,9 @@ packages installed:
 
 ImageMagick
 PythonMagick
+
+
+sudo apt-get install python-pythonmagick
 gspread
 
 
