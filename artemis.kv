@@ -179,6 +179,7 @@
     Button:
         id:LED_id
         text:'LED'
+        on_release:root.toggle_led()
     Button:
         text: 'Door (3 sec)'
     Button:
@@ -201,8 +202,9 @@
         Image:
             source: 'artemis_black.png'
     Button:
-        font_size:24
-        text:'CLICK TO SYNC \nWITH GOOGLE DATABASE'
+        font_size:32
+        background_color:0,.2,.5,1
+        text:'CLICK TO SYNC \nWITH GOOGLE DRIVE'
         on_release:root.google_sync()
 
 
@@ -304,12 +306,12 @@
             Label:
                 font_size:20
                 text:'Total:'
-                color:[0,0,0,1]
+                color:[1,1,1,1]
             Label:
                 id:total_cost
                 font_size:20
                 text:'$ 0.00'
-                color:[0,0,0,1]
+                color:[1,1,1,1]
 
     
 
@@ -355,7 +357,7 @@
         id:item_description_label
         font_size:10
     Button:
-        text: 'DataSheet Button'
+        text: 'Datasheet'
         on_release:root.show_pdf()
     Label:
         id:course_numbers_label
@@ -397,66 +399,66 @@
 <CheckoutItem>:
     orientation:'vertical'
     size_hint_y:None
-    height:100
+    height:200
     BoxLayout:
         orientation:'horizontal'
         Label:
             text:'Item Name:'
-            font_size:18
+            font_size:24
             color:[0,0,0,1]
         Label:
             id:item_name
-            font_size:18
+            font_size:24
             text:''
             color:[0,0,0,1]
     BoxLayout:
         orientation:'horizontal'
         Label:
             text:'Inventory:'
-            font_size:18
+            font_size:24
             color:[0,0,0,1]
         Label:
             id:item_inventory
-            font_size:18
+            font_size:24
             color:[0,0,0,1]
     BoxLayout:
         orientation:'horizontal'
         Label:
-            font_size:18
+            font_size:24
             text: 'Account Quota:'
             color:[0,0,0,1]
         Label:
             id:quota
-            font_size:18
+            font_size:24
             text: '4'
             color:[0,0,0,1]
     BoxLayout:
         orientation:'horizontal'
         Label:
-            font_size:18
+            font_size:24
             text: 'Purchased:'
             color:[0,0,0,1]
         Label:
             id:previously_purchased
-            font_size:18
+            font_size:24
             text: '4'
             color:[0,0,0,1]
     BoxLayout:
         orientation:'horizontal'
         Label:
-            font_size:18
+            font_size:24
             text: 'Price:'
             color:[0,0,0,1]
         Label:
             id:item_cost
-            font_size:18
+            font_size:24
             text: ''
             color:[0,0,0,1]
     Label:
         id:number_in_cart
         font_size:18
         text:'#'
-        color:[0,0,0,1]
+        color:[1,1,1,1]
 
 #    Label:
 #        id:item_name
@@ -521,6 +523,7 @@
             font_size:18
             text: ''
             #color:[0,0,0,1]
+
     Label:
         id:number_in_cart
         font_size:18
@@ -562,6 +565,25 @@
             size_hint:1,.3
             text:'Dismiss'
             on_release:root.dismiss()
+
+
+<SoldOutPopup>:
+    size_hint:.7,.7
+    auto_dismiss:False
+    title:'Sold Out'
+    title_size:24
+    BoxLayout:
+        orientation:'vertical'
+        Label:
+            halign:'center'
+            text:'Sorry! \n Item Sold Out'
+            font_size:40
+        Button:
+            size_hint:1,.3
+            text:'Dismiss'
+            on_release:root.dismiss()
+
+
 
 ##### DATASHEET STUFF ###########
 <DatasheetPopup>:
@@ -634,7 +656,7 @@
 #            # self here refers to the widget i.e BoxLayout
 #            pos: self.pos
 #            size: self.size
-    size_hint: .7, .7
+    size_hint: .5, .7
     auto_dismiss: False
     #background_color:0,.2,.5,1
     title: 'PLEASE CONFIRM ORDER'
@@ -653,30 +675,38 @@
                 GridLayout:
                     cols:2
                     Label:
-                        font_size:18
+                        font_size:24
                         text:'Name:'                
                     Label:
-                        font_size:18
+                        font_size:24
                         id:user_label
                         text: 'hehe'
                     Label:
-                        font_size:18
+                        font_size:24
                         text:'PennID:'
                     Label:
-                        font_size:18
+                        font_size:24
                         id:user_pennID
                     Label:
-                        font_size:18
+                        font_size:24
                         text:'Account:'
                     Label:
-                        font_size:18
+                        font_size:24
                         id:account_label
+
                     Label:
-                        font_size:18
+                        font_size:24
+                        text:'Item:'
+                    Label:
+                        font_size:24
+                        id:item_name_id
+
+                    Label:
+                        font_size:24
                         text:'Total Charge:'
                     Label:
                         id:charge_total            
-                        font_size:18
+                        font_size:24
 
 
         BoxLayout:

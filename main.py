@@ -51,6 +51,8 @@ from google_user_database_import import retrieve_account_quotas
 from google_user_database_import import retrieve_account_quotas_from_matrix
 
 
+
+
 #from user_database_import import import_user_data
 
 from card_reader import initialize_cardReader
@@ -339,6 +341,9 @@ class CheckoutWidget(BoxLayout):
         if (current_user==[]) or (selected_account==[]) or cart_items==[]:
             login_first_error=ErrorPopup()
             login_first_error.open()
+        elif int(cart_items[0].inventory) == 0:
+            soldOut=SoldOutPopup()
+            soldOut.open()
         elif (cart_items[0].purchased >= int(cart_items[0].quota)):
             quota_error=QuotaErrorPopup()
             quota_error.open()
@@ -483,6 +488,7 @@ class ConfirmationScreen(Popup):
         self.ids.user_label.text=current_user.name
         self.ids.user_pennID.text=str(current_user.PennID)
         self.ids.account_label.text=account_selection
+        self.ids.item_name_id.text=cart_items[0].name        
         
         total_cost=0
         total_cost=cart_items[0].cost
@@ -511,6 +517,12 @@ class ConfirmationScreen(Popup):
 class ErrorPopup(Popup):
     def __init__(self,**kwargs):
         super(ErrorPopup,self).__init__(**kwargs)
+        
+        
+class SoldOutPopup(Popup):
+    def __init__(self,**kwargs):
+        super(SoldOutPopup,self).__init__(**kwargs)        
+        
         
         
         
@@ -562,8 +574,11 @@ class SettingsItem(BoxLayout):
 #        self.ids.item_description_label.text=item.description
 #        self.ids.course_numbers_label.text=item.courses
 #        #self.idnumber=item.item_id
-#        self.idnumber=item
+        self.idnumber=item
 
+
+    def toggle_led(self):
+        signal_stuff.change_led(self.idnumber.did,'TOGGLE')
 
 class panelsettings(BoxLayout):
     def __init__(self,**kwargs):
