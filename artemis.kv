@@ -18,32 +18,77 @@
         Accordion:
             AccordionItem:
                 title: 'Category 1'
-                Label:
-                    text: 'Contet Goes Here'
+                BoxLayout:
+                    padding:[10,10,10,10]
+                    orientation: 'vertical'
+                    size_hint:[1,1]
+                    canvas.before:
+                        Color:
+                            rgba: 1, 1, 1, 1
+                        Rectangle:
+                            # self here refers to the widget i.e BoxLayout
+                            pos: self.pos
+                            size: self.size
+                    BoxLayout:
+                        orientation:'vertical'
+                        size_hint:1,.35
+                        Image:
+                            source: 'artemis_black.png'
             AccordionItem:
                 title: 'Category 2'
-                ScrollView:
-                    size_hint:1,1
-                    GridLayout:
-                        cols:1
-                        padding:20
-                        spacing:10
-    
-                        size_hint_y:None
-                        height: self.minimum_height
-                        Button:
-                            text: 'Contet Goes Here'
-                            size_hint_y:None
-                            height:50
+                BoxLayout:
+                    padding:[10,10,10,10]
+                    orientation: 'vertical'
+                    size_hint:[1,1]
+                    canvas.before:
+                        Color:
+                            rgba: 1, 1, 1, 1
+                        Rectangle:
+                            # self here refers to the widget i.e BoxLayout
+                            pos: self.pos
+                            size: self.size
+                    BoxLayout:
+                        orientation:'vertical'
+                        size_hint:1,.35
+                        Image:
+                            source: 'artemis_black.png'
                         
             AccordionItem:
                 title: 'Category 3'
-                Label:
-                    text: 'Content Goes Here'
+                BoxLayout:
+                    padding:[10,10,10,10]
+                    orientation: 'vertical'
+                    size_hint:[1,1]
+                    canvas.before:
+                        Color:
+                            rgba: 1, 1, 1, 1
+                        Rectangle:
+                            # self here refers to the widget i.e BoxLayout
+                            pos: self.pos
+                            size: self.size
+                    BoxLayout:
+                        orientation:'vertical'
+                        size_hint:1,.35
+                        Image:
+                            source: 'artemis_black.png'
             AccordionItem:
                 title: 'Category 4'
-                Label:
-                    text: 'Content Goes Here'
+                BoxLayout:
+                    padding:[10,10,10,10]
+                    orientation: 'vertical'
+                    size_hint:[1,1]
+                    canvas.before:
+                        Color:
+                            rgba: 1, 1, 1, 1
+                        Rectangle:
+                            # self here refers to the widget i.e BoxLayout
+                            pos: self.pos
+                            size: self.size
+                    BoxLayout:
+                        orientation:'vertical'
+                        size_hint:1,.35
+                        Image:
+                            source: 'artemis_black.png'
 
     TabbedPanelItem:
         text: 'Part Vending'
